@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import API_URL from "../config";
 
 function Login() {
   const [mode, setMode] = useState("password"); // "password" or "otp"
@@ -21,7 +22,7 @@ function Login() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login", form);
+      const res = await axios.post(`${API_URL}/api/auth/login`, form);
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("name", res.data.name || "User"); // Store username
       navigate("/");
@@ -35,7 +36,7 @@ function Login() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      await axios.post("http://localhost:4000/api/auth/login-send-otp", { email: form.email });
+      await axios.post(`${API_URL}/api/auth/login-send-otp`, { email: form.email });
       setOtpSent(true);
       setMsg("OTP sent to your email.");
     } catch (err) {
@@ -48,7 +49,7 @@ function Login() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      const res = await axios.post("http://localhost:4000/api/auth/login-otp", { email: form.email, otp });
+      const res = await axios.post(`${API_URL}/api/auth/login-otp`, { email: form.email, otp });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("name", res.data.name || "User"); // Store username
       navigate("/");

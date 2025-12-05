@@ -31,14 +31,15 @@ import { FaUserCircle, FaRobot } from "react-icons/fa";
 import axios from "axios";
 import FileExplorer from "./components/FileExplorer";
 import "./PanelStyles.css";
+import API_URL from "./config";
 
 // --- NEW: Import react-markdown and the syntax highlighter ---
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark as prismOneDark } from "react-syntax-highlighter/dist/esm/styles/prism"; // Use a theme that matches
 
-// Using environment variables for flexible configuration
-const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
+// Using API_URL from config
+const backendUrl = API_URL;
 
 // Improve socket connection with better configuration
 const socket = io(backendUrl, {

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import API_URL from "../config";
 
 function Signup() {
   const [step, setStep] = useState(1);
@@ -18,7 +19,7 @@ function Signup() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      await axios.post("http://localhost:4000/api/auth/send-otp", { email: form.email });
+      await axios.post(`${API_URL}/api/auth/send-otp`, { email: form.email });
       setStep(2);
       setMsg("OTP sent to your email.");
     } catch (err) {
@@ -31,7 +32,7 @@ function Signup() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      await axios.post("http://localhost:4000/api/auth/verify-otp", {
+      await axios.post(`${API_URL}/api/auth/verify-otp`, {
         ...form,
         otp
       });

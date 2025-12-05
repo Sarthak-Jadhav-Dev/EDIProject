@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../config";
 
 function ForgotPassword() {
   const [input, setInput] = useState({ email: "", phone: "" });
@@ -15,7 +16,7 @@ function ForgotPassword() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      await axios.post("http://localhost:4000/api/auth/forgot-password", input);
+      await axios.post(`${API_URL}/api/auth/forgot-password`, input);
       setStep(2);
       setMsg("OTP sent to your email/phone.");
     } catch (err) {
@@ -27,7 +28,7 @@ function ForgotPassword() {
     e.preventDefault();
     setError(""); setMsg("");
     try {
-      await axios.post("http://localhost:4000/api/auth/reset-password", {
+      await axios.post(`${API_URL}/api/auth/reset-password`, {
         ...input, otp, newPassword
       });
       setMsg("Password reset successful! Redirecting to login...");

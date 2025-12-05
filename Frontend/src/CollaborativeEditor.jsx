@@ -260,6 +260,37 @@ const useTypingAnimation = (textToType) => {
   return { typedText, isTyping };
 };
 
+// --- FIXED: MessageContent component for rendering Markdown and Code ---
+const MessageContent = memo(({ content }) => {
+  return (
+    <div className="markdown-content">
+      <ReactMarkdown
+        components={{
+          code({ node, inline, className, children, ...props }) {
+            const match = /language-(\w+)/.exec(className || "");
+            return !inline && match ? (
+              <SyntaxHighlighter
+                style={prismOneDark}
+                language={match[1]}
+                PreTag="div"
+                {...props}
+              >
+                {String(children).replace(/\n$/, "")}
+              </SyntaxHighlighter>
+            ) : (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            );
+          },
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
+  );
+});
+
 // --- FIXED: Component for AI message with typing effect (wrapped in memo) ---
 const AiTypingComponent = memo(({ message, chatBoxRef }) => {
   const { typedText } = useTypingAnimation(message);

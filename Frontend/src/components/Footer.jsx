@@ -96,7 +96,7 @@ const Footer = () => (
 
       <div style={socialLinksStyle}>
         <a
-          href="https://github.com/"
+          href="https://github.com/Sarthak-Jadhav-Dev/EDIProject"
           target="_blank"
           rel="noopener noreferrer"
           style={socialLinkStyle}
@@ -126,7 +126,7 @@ const Footer = () => (
       </div>
 
       <div style={copyrightStyle}>
-        © {new Date().getFullYear()} AICollab. Built with ❤️ for developers.
+        © {new Date().getFullYear()} CodeCollab. Built with ❤️ for developers.
       </div>
     </div>
   </footer>

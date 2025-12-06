@@ -1490,6 +1490,56 @@ const CollaborativeEditor = () => {
     deleteFile(name);
   };
 
+  // --- NEW: Quick AI Actions ---
+  const handleQuickAction = (actionType) => {
+    let prompt = "";
+    const codeContext = selectedCode ? `the selected code` : `the file ${activeFile}`;
+    const codeToAnalyze = selectedCode || currentFile.content;
+
+    if (!codeToAnalyze || !codeToAnalyze.trim()) {
+      toast.warning("Please select some code or open a non-empty file first.");
+      return;
+    }
+
+    switch (actionType) {
+      case "check":
+        prompt = `Please check ${codeContext} for errors, bugs, and potential issues. Provide a detailed analysis.`;
+        break;
+      case "time":
+        prompt = `Please analyze the Time Complexity of ${codeContext}. Explain the reasoning behind the complexity class.`;
+        break;
+      case "space":
+        prompt = `Please analyze the Space Complexity of ${codeContext}. Explain the reasoning behind the complexity analysis.`;
+        break;
+      case "security":
+        prompt = `Please perform a Security Check on ${codeContext}. Identify any vulnerabilities, security risks, or unsafe practices.`;
+        break;
+      default:
+        return;
+    }
+
+    // Send the prompt to AI
+    const userMessage = { user: userName, msg: prompt, timestamp: new Date() };
+    setAiChat((chat) => [...chat, userMessage]);
+    setLastUserMessage(prompt);
+
+    socket.emit("askAI", {
+      roomId,
+      prompt,
+      selectedCode: codeToAnalyze,
+      filePath: activeFile,
+      language,
+    });
+
+    // Reset retry count when sending a new message
+    setAiRetryCount(0);
+    setAiLastError("");
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+  };
+
   // --- NEW: Multi-line Textarea Logic ---
   const autoResizeTextarea = (e) => {
     const textarea = e.target;
@@ -1962,6 +2012,80 @@ const CollaborativeEditor = () => {
                 )}
               </div>
               <div className="vsc-right-input-area">
+                {chatMode === "ai" && (
+                  <div className="quick-actions" style={{
+                    display: 'flex',
+                    gap: '8px',
+                    marginBottom: '10px',
+                    flexWrap: 'wrap',
+                    padding: '0 5px'
+                  }}>
+                    <button
+                      onClick={() => handleQuickAction('check')}
+                      className="quick-action-btn"
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11px',
+                        background: '#2c313a',
+                        border: '1px solid #454545',
+                        color: '#dcdcdc',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                      title="Check for errors and bugs"
+                    >
+                      🐞 Code Check
+                    </button>
+                    <button
+                      onClick={() => handleQuickAction('time')}
+                      className="quick-action-btn"
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11px',
+                        background: '#2c313a',
+                        border: '1px solid #454545',
+                        color: '#dcdcdc',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                      title="Analyze Time Complexity"
+                    >
+                      ⏱️ Time Comp.
+                    </button>
+                    <button
+                      onClick={() => handleQuickAction('space')}
+                      className="quick-action-btn"
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11px',
+                        background: '#2c313a',
+                        border: '1px solid #454545',
+                        color: '#dcdcdc',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                      title="Analyze Space Complexity"
+                    >
+                      💾 Space Comp.
+                    </button>
+                    <button
+                      onClick={() => handleQuickAction('security')}
+                      className="quick-action-btn"
+                      style={{
+                        padding: '4px 8px',
+                        fontSize: '11px',
+                        background: '#2c313a',
+                        border: '1px solid #454545',
+                        color: '#dcdcdc',
+                        borderRadius: '4px',
+                        cursor: 'pointer'
+                      }}
+                      title="Perform Security Check"
+                    >
+                      🔒 Security
+                    </button>
+                  </div>
+                )}
                 <form onSubmit={handleFormSubmit} className="chat-form">
                   <textarea
                     ref={textareaRef}

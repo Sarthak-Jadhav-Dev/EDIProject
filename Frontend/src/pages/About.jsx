@@ -4,9 +4,10 @@ import Footer from "../components/Footer";
 import TeamTimeline from "../components/TeamTimeline";
 
 const team = [
-  { name: "Aryan", role: "Founder & Lead Dev", img: "https://randomuser.me/api/portraits/men/32.jpg" },
-  { name: "Sam", role: "AI Engineer", img: "https://randomuser.me/api/portraits/men/45.jpg" },
-  { name: "Priya", role: "Frontend Designer", img: "https://randomuser.me/api/portraits/women/65.jpg" }
+  { name: "Aryan Jadhav", role: "", img: "https://randomuser.me/api/portraits/lego/5.jpg" },
+  { name: "Darshan Jadhav", role: "", img: "https://randomuser.me/api/portraits/lego/5.jpg" },
+  { name: "Sanskar Jadhav", role: "", img: "https://randomuser.me/api/portraits/lego/5.jpg" },
+  { name: "Sarthak Jadhav", role: "", img: "https://randomuser.me/api/portraits/lego/5.jpg" }
 ];
 
 const About = () => (

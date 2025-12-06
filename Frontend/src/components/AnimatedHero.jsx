@@ -3,39 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 // Using a stable CDN import for jwt-decode.
 import { jwtDecode } from "https://esm.sh/jwt-decode@4.0.0";
 
-// --- Animated Background Component ---
-const AnimatedBackground = () => {
-  return (
-    <div style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      background: `
-        radial-gradient(circle at 20% 50%, rgba(127, 83, 172, 0.4) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(86, 182, 194, 0.4) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(127, 83, 172, 0.3) 0%, transparent 50%),
-        linear-gradient(135deg, #0f0f23 0%, #1a1a2e 30%, #16213e 70%, #0f3460 100%)
-      `,
-      animation: 'backgroundFloat 20s ease-in-out infinite',
-      zIndex: 0
-    }}>
-      <style>{`
-        @keyframes backgroundFloat {
-          0%, 100% { 
-            transform: translateY(0) scale(1);
-            opacity: 1;
-          }
-          50% { 
-            transform: translateY(-30px) scale(1.05);
-            opacity: 0.9;
-          }
-        }
-      `}</style>
-    </div>
-  );
-};
+
 
 // --- Loading Screen Component ---
 // This is the initial loading animation.
@@ -136,6 +104,10 @@ const HeroNavbar = () => {
   );
 };
 
+import { ShaderAnimation } from "@/components/ui/shader-animation";
+
+// ... (other imports)
+
 // --- Animated Hero Section ---
 // This component contains the main visual content and buttons.
 const AnimatedHero = () => {
@@ -151,75 +123,33 @@ const AnimatedHero = () => {
     navigate("/features");
   };
 
-  // Responsive styles
-  const heroStyle = {
-    display: "flex", flexDirection: "column", justifyContent: "center",
-    minHeight: "100vh", position: "relative", color: "#fff",
-    overflow: "hidden", backgroundColor: '#000',
-  };
-
-  const contentContainerStyle = {
-    position: 'relative', zIndex: 1, display: 'flex', justifyContent: 'flex-start',
-    width: '100%', maxWidth: '1400px', padding: '0 5%', margin: '0 auto',
-    pointerEvents: 'none',
-  };
-
-  const textBlockStyle = {
-    maxWidth: '550px',
-    textAlign: 'left',
-  };
-
-  const mainTextStyle = {
-    fontSize: "clamp(2em, 8vw, 4em)",
-    fontWeight: "bold",
-    lineHeight: '1.2',
-    letterSpacing: "1px",
-    textShadow: '0 3px 10px rgba(0, 0, 0, 0.7)',
-  };
-
-  const subTextStyle = {
-    fontSize: "clamp(1em, 3vw, 1.4em)",
-    opacity: 0.9,
-    marginTop: '1rem',
-    marginBottom: '2.5rem',
-    maxWidth: '500px',
-    textShadow: '0 2px 8px rgba(0, 0, 0, 0.6)',
-  };
-
-  const buttonContainerStyle = {
-    display: 'flex',
-    gap: '20px',
-    flexWrap: 'wrap'
-  };
-
-  const glowBtn = {
-    background: "linear-gradient(90deg, #7f53ac 0%, #56b6c2 100%)",
-    color: "#fff",
-    border: "none",
-    borderRadius: "32px",
-    padding: "clamp(12px, 3vw, 16px) clamp(24px, 5vw, 40px)",
-    fontSize: "clamp(1em, 2.5vw, 1.2em)",
-    fontWeight: "bold",
-    boxShadow: "0 0 24px #56b6c2aa",
-    cursor: "pointer",
-    transition: "transform 0.2s, box-shadow 0.2s",
-    pointerEvents: 'auto',
-  };
-
   return (
-    <section style={heroStyle}>
-      <AnimatedBackground />
-      <div style={contentContainerStyle}>
-        <div style={textBlockStyle}>
-          <h1 style={mainTextStyle}>
-            Code Together. <span style={{ color: "#56b6c2" }}>Think Smarter.</span> Build Faster.
+    <section className="relative flex min-h-screen flex-col justify-center overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 z-0">
+        <ShaderAnimation />
+      </div>
+
+      <div className="relative z-10 mx-auto flex w-full max-w-[1400px] justify-start px-[5%] pointer-events-none">
+        <div className="max-w-[550px] text-left">
+          <h1 className="text-[clamp(2em,8vw,4em)] font-bold leading-[1.2] tracking-wider drop-shadow-xl">
+            Code Together. <span className="text-[#56b6c2]">Think Smarter.</span> Build Faster.
           </h1>
-          <p style={subTextStyle}>
-            Real-time collaborative coding + <span style={{ color: "#7f53ac" }}>AI teammate</span> for every project.
+          <p className="mt-4 mb-10 max-w-[500px] text-[clamp(1em,3vw,1.4em)] opacity-90 drop-shadow-lg">
+            Real-time collaborative coding + <span className="text-[#7f53ac]">AI teammate</span> for every project.
           </p>
-          <div style={buttonContainerStyle}>
-            <button style={glowBtn} onClick={handleGetDemo}>Get Demo</button>
-            <button style={{ ...glowBtn, background: "#252626", boxShadow: "0 0 16px #7f53ac88" }} onClick={handleExploreFeatures}>Explore Features</button>
+          <div className="flex flex-wrap gap-5 pointer-events-auto">
+            <button
+              className="bg-gradient-to-r from-[#7f53ac] to-[#56b6c2] text-white border-0 rounded-full py-[clamp(12px,3vw,16px)] px-[clamp(24px,5vw,40px)] text-[clamp(1em,2.5vw,1.2em)] font-bold shadow-[0_0_24px_#56b6c2aa] cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              onClick={handleGetDemo}
+            >
+              Get Demo
+            </button>
+            <button
+              className="bg-[#252626] text-white border-0 rounded-full py-[clamp(12px,3vw,16px)] px-[clamp(24px,5vw,40px)] text-[clamp(1em,2.5vw,1.2em)] font-bold shadow-[0_0_16px_#7f53ac88] cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              onClick={handleExploreFeatures}
+            >
+              Explore Features
+            </button>
           </div>
         </div>
       </div>
@@ -434,23 +364,14 @@ const StatsSection = () => {
 const TestimonialsSection = () => {
   const testimonials = [
     {
-      name: "Sarah Chen",
-      role: "Full Stack Developer",
-      company: "TechCorp",
       text: "AICollab has transformed how our team works together. The real-time collaboration and AI assistance are game-changers!",
       avatar: "👩‍💻"
     },
     {
-      name: "Michael Rodriguez",
-      role: "Engineering Manager",
-      company: "StartupXYZ",
       text: "The voice communication feature is incredible. We can discuss code changes while editing together seamlessly.",
       avatar: "👨‍💼"
     },
     {
-      name: "Emily Watson",
-      role: "Software Engineer",
-      company: "DevStudio",
       text: "Best collaborative coding platform I've used. The AI suggestions are surprisingly accurate and helpful.",
       avatar: "👩‍🔬"
     }
@@ -550,7 +471,7 @@ const TestimonialsSection = () => {
                 <span style={avatarStyle}>{testimonial.avatar}</span>
                 <div>
                   <div style={nameStyle}>{testimonial.name}</div>
-                  <div style={roleStyle}>{testimonial.role} at {testimonial.company}</div>
+                  <div style={roleStyle}>{testimonial.role}  {testimonial.company}</div>
                 </div>
               </div>
             </div>

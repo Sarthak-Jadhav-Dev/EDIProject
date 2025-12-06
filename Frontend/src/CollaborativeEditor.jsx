@@ -352,6 +352,7 @@ const CollaborativeEditor = () => {
   // --- NEW: Voice Communication States ---
   const [isMicOn, setIsMicOn] = useState(false);
   const [localStream, setLocalStream] = useState(null);
+  const localStreamRef = useRef(null); // Ref to access stream in callbacks
   const peersRef = useRef({});
   const audioRefs = useRef({});
   const [voiceUsers, setVoiceUsers] = useState([]); // Track users in voice chat
@@ -656,8 +657,8 @@ const CollaborativeEditor = () => {
           console.log(`🎤 Peer connection state with ${from}:`, peer.connectionState);
         };
 
-        if (localStream) {
-          localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        if (localStreamRef.current) {
+          localStreamRef.current.getTracks().forEach(track => peer.addTrack(track, localStreamRef.current));
         }
 
         await peer.setRemoteDescription(new RTCSessionDescription(offer));
@@ -706,7 +707,7 @@ const CollaborativeEditor = () => {
       toast.info(`${userName || 'A user'} joined voice chat`);
 
       try {
-        if (userId === socket.id || !localStream) return;
+        if (userId === socket.id || !localStreamRef.current) return;
 
         const peer = new RTCPeerConnection({
           iceServers: [
@@ -719,7 +720,7 @@ const CollaborativeEditor = () => {
         });
         peersRef.current[userId] = peer;
 
-        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        localStreamRef.current.getTracks().forEach(track => peer.addTrack(track, localStreamRef.current));
 
         peer.onicecandidate = (event) => {
           if (event.candidate) {
@@ -1419,6 +1420,7 @@ const CollaborativeEditor = () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         setLocalStream(stream);
+        localStreamRef.current = stream; // Update ref
         setIsMicOn(true);
         socket.emit("joinVoice", { roomId });
         toast.success("Microphone enabled!");
@@ -1432,6 +1434,7 @@ const CollaborativeEditor = () => {
         localStream.getTracks().forEach(track => track.stop());
       }
       setLocalStream(null);
+      localStreamRef.current = null; // Update ref
       setIsMicOn(false);
 
       // Clear own user from local voice list

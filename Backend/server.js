@@ -54,11 +54,23 @@ app.use('/api/explorer', (req, res, next) => {
 const User = require('./models/User');
 
 // Auth & OTP Flow
+// Auth & OTP Flow
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: "smtp.gmail.com", // Explicit host
+  port: 465,                // Explicit port (SSL)
+  secure: true,             // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
+  }
+});
+
+// Verify transporter connection
+transporter.verify(function (error, success) {
+  if (error) {
+    console.log("❌ Nodemailer connection error:", error);
+  } else {
+    console.log("✅ Nodemailer server is ready to take our messages");
   }
 });
 

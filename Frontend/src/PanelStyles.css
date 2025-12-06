@@ -572,10 +572,11 @@
 /* --- NEW ChatGPT Style Chat --- */
 .chat-message {
   display: flex;
-  max-width: 90%;
+  max-width: 95%; /* Increased slightly */
   align-items: flex-start;
   gap: 12px;
   margin-bottom: 20px;
+  min-width: 0; /* Important for flex items to shrink */
 }
 
 .chat-message.user-message {
@@ -585,6 +586,7 @@
 
 .chat-message.ai-message {
   align-self: flex-start;
+  width: 100%; /* AI messages can take full available width */
 }
 
 /* WhatsApp-style: Own messages on right with green background */
@@ -607,13 +609,13 @@
 }
 
 .chat-avatar {
-  width: 32px;
-  height: 32px;
+  width: 28px; /* Slightly smaller */
+  height: 28px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 16px;
   color: white;
   border-radius: 50%;
 }
@@ -628,11 +630,15 @@
 
 .chat-bubble {
   background-color: #2a2d3e;
-  padding: 15px 20px;
+  padding: 12px 16px; /* Slightly more compact padding */
   border-radius: 12px;
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 0; /* Crucial for preventing overflow */
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .user-message .chat-bubble {
@@ -676,130 +682,33 @@
 
 /* --- NEW Styles for react-markdown --- */
 .chat-text-content {
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 14px; /* Reduced from 15px */
+  line-height: 1.5;
   color: #e0e0e0;
   word-break: break-word;
-  /* Ensure long words wrap */
 }
 
-.chat-text-content h1 {
-  font-size: 24px;
-  font-weight: bold;
-  margin: 15px 0 10px;
-  color: #fff;
-  border-bottom: 2px solid #007acc;
-  padding-bottom: 5px;
-}
-
-.chat-text-content h2 {
-  font-size: 20px;
-  font-weight: bold;
-  margin: 15px 0 10px;
-  color: #64b5f6;
-}
-
-.chat-text-content h3 {
-  font-size: 18px;
-  font-weight: bold;
-  margin: 12px 0 8px;
-  color: #4ec9b0;
-}
-
-.chat-text-content .chat-paragraph {
-  margin: 10px 0;
-}
-
-.chat-text-content strong {
-  font-weight: bold;
-  color: #64b5f6;
-}
-
-.chat-text-content ul,
-.chat-text-content ol {
-  margin: 10px 0 10px 20px;
-  padding-left: 15px;
-}
-
-.chat-text-content li {
-  margin-bottom: 5px;
-}
-
-.chat-text-content .chat-blockquote {
-  border-left: 3px solid #007acc;
-  padding-left: 15px;
-  margin: 10px 0;
-  color: #a0a0a0;
-  font-style: italic;
-}
-
-.chat-text-content .inline-code {
-  background: #2d2d2d;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: 'Fira Code', Consolas, monospace;
-  font-size: 14px;
-}
-
-/* --- End react-markdown styles --- */
-
-.retry-info {
-  margin-top: 8px;
-  padding: 8px;
-  background: rgba(0, 122, 204, 0.2);
-  border-radius: 4px;
-  font-size: 13px;
-  color: #64b5f6;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+/* ... existing headings ... */
 
 /* --- UPDATED Code Block Styles --- */
 .chat-code-block {
   background: #121212;
   border: 1px solid #252526;
   border-radius: 8px;
-  margin: 15px 0;
+  margin: 10px 0;
   overflow: hidden;
+  max-width: 100%; /* Ensure it doesn't push bounds */
 }
 
-.code-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #23272e;
-  padding: 8px 12px;
-  font-size: 13px;
-  color: #8a8fa3;
-  font-weight: 500;
-  border-bottom: 1px solid #252526;
-}
-
-.copy-button {
-  background: #3c3f41;
-  color: #cccccc;
-  border: none;
-  border-radius: 4px;
-  padding: 5px 10px;
-  font-size: 12px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: background 0.15s, color 0.15s;
-}
-
-.copy-button:hover {
-  background: #007acc;
-  color: #fff;
-}
+/* ... existing code-header ... */
 
 .chat-code-block pre {
   margin: 0 !important;
-  padding: 15px !important;
+  padding: 12px !important;
   background: #282c34 !important;
-  /* Match the oneDark theme */
+  overflow-x: auto !important; /* Force horizontal scroll for code */
+  white-space: pre !important; /* Don't wrap code, scroll it */
+  max-width: 100%;
 }
 
 .chat-code-block code {

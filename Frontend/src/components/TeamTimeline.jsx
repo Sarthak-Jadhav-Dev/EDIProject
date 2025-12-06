@@ -1,10 +1,7 @@
 import React from "react";
 
 const timeline = [
-  { year: "2023", event: "Idea Born: Frustrated by slow teamwork, we imagined an AI-powered coding platform." },
-  { year: "2024", event: "Prototype: Built first real-time editor with basic AI suggestions." },
-  { year: "2025", event: "Launch: Added multi-format support, smart summaries, and team chat." },
-  { year: "2026", event: "Today: Growing community, advanced AI teammate, and enterprise features." }
+  
 ];
 
 const TeamTimeline = () => (

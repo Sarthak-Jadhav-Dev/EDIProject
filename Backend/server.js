@@ -398,16 +398,45 @@ io.on('connection', (socket) => {
   });
 
   // NEW: Voice Communication Handlers
+  // NEW: Voice Communication Handlers
   socket.on("joinVoice", ({ roomId }) => {
     socket.join(roomId);
-    // Notify others in the room that a user has joined voice
-    socket.to(roomId).emit("voice-user-joined", { userId: socket.id });
+
+    // valid tracking of voice users
+    if (!global.voiceRooms) global.voiceRooms = new Map();
+    if (!global.voiceRooms.has(roomId)) global.voiceRooms.set(roomId, new Set());
+
+    // Store user info
+    const voiceUser = { id: socket.id, name: socket.userName || 'Anonymous' };
+    global.voiceRooms.get(roomId).add(voiceUser);
+
+    // Notify others
+    socket.to(roomId).emit("voice-user-joined", { userId: socket.id, userName: socket.userName || 'Anonymous' });
+
+    // Send list of current voice users to the joiner
+    const usersInVoice = Array.from(global.voiceRooms.get(roomId));
+    socket.emit("voice-connected-users", usersInVoice);
+
     console.log(`🎤 User ${socket.id} joined voice in room ${roomId}`);
   });
 
   socket.on("leaveVoice", ({ roomId }) => {
     socket.leave(roomId);
-    // Notify others in the room that a user has left voice
+
+    // Remove from tracking
+    if (global.voiceRooms && global.voiceRooms.has(roomId)) {
+      const room = global.voiceRooms.get(roomId);
+      // We have to find the object with matching ID since they are objects
+      for (const user of room) {
+        if (user.id === socket.id) {
+          room.delete(user);
+          break;
+        }
+      }
+      if (room.size === 0) global.voiceRooms.delete(roomId);
+    }
+
+    // Notify others
     socket.to(roomId).emit("voice-user-left", { userId: socket.id });
     console.log(`🔇 User ${socket.id} left voice in room ${roomId}`);
   });
@@ -500,8 +529,18 @@ io.on('connection', (socket) => {
     console.log(`   Room: ${socket.roomId || 'None'}`);
     console.log(`   Total users: ${connectedUsers}`);
 
-    // Notify others that this user has left voice
+    // Notify others that this user has left voice and clean up tracking
     if (socket.roomId) {
+      if (global.voiceRooms && global.voiceRooms.has(socket.roomId)) {
+        const room = global.voiceRooms.get(socket.roomId);
+        for (const user of room) {
+          if (user.id === socket.id) {
+            room.delete(user);
+            break;
+          }
+        }
+        if (room.size === 0) global.voiceRooms.delete(socket.roomId);
+      }
       socket.to(socket.roomId).emit("voice-user-left", { userId: socket.id });
     }
 

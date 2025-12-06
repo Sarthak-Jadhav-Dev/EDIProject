@@ -354,6 +354,7 @@ const CollaborativeEditor = () => {
   const [localStream, setLocalStream] = useState(null);
   const peersRef = useRef({});
   const audioRefs = useRef({});
+  const [voiceUsers, setVoiceUsers] = useState([]); // Track users in voice chat
 
   // --- Resizer logic for bottom panel ---
   const [outputPanelHeight, setOutputPanelHeight] = useState(180);
@@ -611,29 +612,48 @@ const CollaborativeEditor = () => {
     });
 
     // --- NEW: Voice Communication Event Listeners ---
+
+    // Handle initial list of voice users
+    socket.on("voice-connected-users", (users) => {
+      console.log("🎤 Received voice user list:", users);
+      setVoiceUsers(users);
+    });
+
     // Handle incoming voice offer
     socket.on("voice-offer", async ({ from, offer }) => {
       try {
         const peer = new RTCPeerConnection({
           iceServers: [
             { urls: "stun:stun.l.google.com:19302" },
-            { urls: "stun:stun1.l.google.com:19302" }
+            { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun2.l.google.com:19302" },
+            { urls: "stun:stun3.l.google.com:19302" },
+            { urls: "stun:stun4.l.google.com:19302" },
           ]
         });
         peersRef.current[from] = peer;
 
         peer.ontrack = (event) => {
+          console.log(`🎤 Received audio track from ${from}`);
           const audio = document.createElement("audio");
           audio.srcObject = event.streams[0];
           audio.autoplay = true;
+          audio.controls = false; // Hidden audio control
           audioRefs.current[from] = audio;
           document.body.appendChild(audio);
+
+          // Attempt to play if autoplay matches blocked
+          audio.play().catch(e => console.error("Audio play error:", e));
         };
 
         peer.onicecandidate = (event) => {
           if (event.candidate) {
             socket.emit("voice-candidate", { to: from, candidate: event.candidate });
           }
+        };
+
+        peer.onconnectionstatechange = () => {
+          console.log(`🎤 Peer connection state with ${from}:`, peer.connectionState);
         };
 
         if (localStream) {
@@ -674,14 +694,27 @@ const CollaborativeEditor = () => {
     });
 
     // Handle new user joining voice
-    socket.on("voice-user-joined", async ({ userId }) => {
+    socket.on("voice-user-joined", async ({ userId, userName }) => {
+      console.log(`🎤 User joined voice: ${userId} (${userName})`);
+
+      // Add to UI list
+      setVoiceUsers(prev => {
+        if (prev.some(u => u.id === userId)) return prev;
+        return [...prev, { id: userId, name: userName || 'User' }];
+      });
+
+      toast.info(`${userName || 'A user'} joined voice chat`);
+
       try {
         if (userId === socket.id || !localStream) return;
 
         const peer = new RTCPeerConnection({
           iceServers: [
             { urls: "stun:stun.l.google.com:19302" },
-            { urls: "stun:stun1.l.google.com:19302" }
+            { urls: "stun:stun1.l.google.com:19302" },
+            { urls: "stun:stun2.l.google.com:19302" },
+            { urls: "stun:stun3.l.google.com:19302" },
+            { urls: "stun:stun4.l.google.com:19302" },
           ]
         });
         peersRef.current[userId] = peer;
@@ -695,11 +728,13 @@ const CollaborativeEditor = () => {
         };
 
         peer.ontrack = (event) => {
+          console.log(`🎤 Received audio track from ${userId}`);
           const audio = document.createElement("audio");
           audio.srcObject = event.streams[0];
           audio.autoplay = true;
           audioRefs.current[userId] = audio;
           document.body.appendChild(audio);
+          audio.play().catch(e => console.error("Audio play error:", e));
         };
 
         const offer = await peer.createOffer();
@@ -712,6 +747,11 @@ const CollaborativeEditor = () => {
 
     // Handle user leaving voice
     socket.on("voice-user-left", ({ userId }) => {
+      console.log(`🎤 User left voice: ${userId}`);
+
+      // Remove from UI list
+      setVoiceUsers(prev => prev.filter(u => u.id !== userId));
+
       try {
         if (audioRefs.current[userId]) {
           audioRefs.current[userId].remove();
@@ -738,6 +778,7 @@ const CollaborativeEditor = () => {
       socket.off("cursorChange");
       socket.off("fileStructureUpdate");
       // Remove voice communication listeners
+      socket.off("voice-connected-users");
       socket.off("voice-offer");
       socket.off("voice-answer");
       socket.off("voice-candidate");
@@ -1392,6 +1433,10 @@ const CollaborativeEditor = () => {
       }
       setLocalStream(null);
       setIsMicOn(false);
+
+      // Clear own user from local voice list
+      setVoiceUsers(prev => prev.filter(u => u.id !== socket.id));
+
       socket.emit("leaveVoice", { roomId });
       toast.info("Microphone disabled");
     }
@@ -1639,9 +1684,36 @@ const CollaborativeEditor = () => {
             {users.length} user{users.length !== 1 ? "s" : ""} online
           </span>
           {/* NEW: Voice Controls */}
-          <button className="vsc-topbar-button" onClick={toggleMic}>
+          <button
+            className={`vsc-topbar-button ${isMicOn ? 'mic-on' : ''}`}
+            onClick={toggleMic}
+            title={isMicOn ? "Disable Microphone" : "Enable Microphone"}
+            style={{ backgroundColor: isMicOn ? '#e06c75' : '' }}
+          >
             {isMicOn ? "🔇 Mute" : "🎙️ Join Voice"}
           </button>
+
+          {voiceUsers.length > 0 && (
+            <div className="voice-users-list" style={{ marginLeft: '10px', display: 'flex', gap: '5px' }}>
+              {voiceUsers.map(u => (
+                <span key={u.id} title={u.name} style={{
+                  background: '#98c379',
+                  color: '#282c34',
+                  borderRadius: '50%',
+                  width: '24px',
+                  height: '24px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  cursor: 'default'
+                }}>
+                  {u.name.charAt(0).toUpperCase()}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

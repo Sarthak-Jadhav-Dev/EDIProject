@@ -2013,25 +2013,10 @@ const CollaborativeEditor = () => {
               </div>
               <div className="vsc-right-input-area">
                 {chatMode === "ai" && (
-                  <div className="quick-actions" style={{
-                    display: 'flex',
-                    gap: '8px',
-                    marginBottom: '10px',
-                    flexWrap: 'wrap',
-                    padding: '0 5px'
-                  }}>
+                  <div className="quick-actions">
                     <button
                       onClick={() => handleQuickAction('check')}
                       className="quick-action-btn"
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        background: '#2c313a',
-                        border: '1px solid #454545',
-                        color: '#dcdcdc',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
                       title="Check for errors and bugs"
                     >
                       🐞 Code Check
@@ -2039,15 +2024,6 @@ const CollaborativeEditor = () => {
                     <button
                       onClick={() => handleQuickAction('time')}
                       className="quick-action-btn"
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        background: '#2c313a',
-                        border: '1px solid #454545',
-                        color: '#dcdcdc',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
                       title="Analyze Time Complexity"
                     >
                       ⏱️ Time Comp.
@@ -2055,15 +2031,6 @@ const CollaborativeEditor = () => {
                     <button
                       onClick={() => handleQuickAction('space')}
                       className="quick-action-btn"
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        background: '#2c313a',
-                        border: '1px solid #454545',
-                        color: '#dcdcdc',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
                       title="Analyze Space Complexity"
                     >
                       💾 Space Comp.
@@ -2071,15 +2038,6 @@ const CollaborativeEditor = () => {
                     <button
                       onClick={() => handleQuickAction('security')}
                       className="quick-action-btn"
-                      style={{
-                        padding: '4px 8px',
-                        fontSize: '11px',
-                        background: '#2c313a',
-                        border: '1px solid #454545',
-                        color: '#dcdcdc',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                      }}
                       title="Perform Security Check"
                     >
                       🔒 Security

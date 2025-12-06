@@ -871,3 +871,38 @@
   scrollbar-width: thin;
   scrollbar-color: #3c3f41 #232336;
 }
+
+/* Quick Actions Area */
+.quick-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.quick-action-btn {
+  padding: 6px 12px;
+  font-size: 12px;
+  background: #2d323b;
+  border: 1px solid #3e4451;
+  color: #abb2bf;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.quick-action-btn:hover {
+  background: #3e4451;
+  color: #fff;
+  border-color: #61afef;
+  transform: translateY(-1px);
+}
+
+.quick-action-btn:active {
+  transform: translateY(0);
+}

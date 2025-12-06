@@ -142,7 +142,7 @@ const AnimatedHero = () => {
               className="bg-gradient-to-r from-[#7f53ac] to-[#56b6c2] text-white border-0 rounded-full py-[clamp(12px,3vw,16px)] px-[clamp(24px,5vw,40px)] text-[clamp(1em,2.5vw,1.2em)] font-bold shadow-[0_0_24px_#56b6c2aa] cursor-pointer transition-transform hover:scale-105 active:scale-95"
               onClick={handleGetDemo}
             >
-              Get Demo
+              Code Now
             </button>
             <button
               className="bg-[#252626] text-white border-0 rounded-full py-[clamp(12px,3vw,16px)] px-[clamp(24px,5vw,40px)] text-[clamp(1em,2.5vw,1.2em)] font-bold shadow-[0_0_16px_#7f53ac88] cursor-pointer transition-transform hover:scale-105 active:scale-95"
